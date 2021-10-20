@@ -1,6 +1,6 @@
 "----------------------------------------------------------------------------
 "  Description: Vim Ada syntax file
-"     Language: Ada (2005)
+"     Language: Ada (2012)
 "	   $Id: ada.vim 887 2008-07-08 14:29:01Z krischik $
 "    Copyright: Copyright (C) 2006 Martin Krischik
 "   Maintainer: Martin Krischik
@@ -9,7 +9,7 @@
 " Contributors: Preben Randhol.
 "      $Author: krischik $
 "	 $Date: 2008-07-08 16:29:01 +0200 (Di, 08 Jul 2008) $
-"      Version: 4.6
+"      Version: 4.6-onox
 "    $Revision: 887 $
 "     $HeadURL: https://gnuada.svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/syntax/ada.vim $
 "		http://www.dwheeler.com/vim
@@ -22,10 +22,10 @@
 "		05.11.2006 MK Bram suggested to save on spaces
 "    Help Page: help ft-ada-syntax
 "------------------------------------------------------------------------------
-" The formal spec of Ada 2005 (ARM) is the "Ada 2005 Reference Manual".
+" The formal spec of Ada 2012 (ARM) is the "Ada 2012 Reference Manual".
 " For more Ada 2005 info, see http://www.gnuada.org and http://www.adapower.com.
 "
-" This vim syntax file works on vim 7.0 only and makes use of most of Voim 7.0 
+" This Vim syntax file works on Vim 7.0 only and makes use of most of Vim 7.0
 " advanced features.
 "------------------------------------------------------------------------------
 
@@ -43,14 +43,14 @@ syntax   case ignore
 
 " Section: Highlighting commands {{{1
 "
-" There are 72 reserved words in total in Ada2005. Some keywords are
+" There are 73 reserved words in total in Ada 2012. Some keywords are
 " used in more than one way. For example:
 " 1. "end" is a general keyword, but "end if" ends a Conditional.
 " 2. "then" is a conditional, but "and then" is an operator.
 "
 for b:Item in g:ada#Keywords
    " Standard Exceptions (including I/O).
-   " We'll highlight the standard exceptions, similar to vim's Python mode.
+   " We'll highlight the standard exceptions, similar to Vim's Python mode.
    " It's possible to redefine the standard exceptions as something else,
    " but doing so is very bad practice, so simply highlighting them makes sense.
    if b:Item['kind'] == "x"
@@ -76,15 +76,15 @@ syntax keyword  adaLabel	others
 
 " Section: Operatoren {{{1
 "
-syntax keyword  adaOperator abs mod not rem xor
-syntax match    adaOperator "\<and\>"
-syntax match    adaOperator "\<and\s\+then\>"
-syntax match    adaOperator "\<or\>"
-syntax match    adaOperator "\<or\s\+else\>"
+syntax keyword  adaOperatorKeyword abs mod not rem xor
+syntax match    adaOperatorKeyword "\<and\>"
+syntax match    adaOperatorKeyword "\<and\s\+then\>"
+syntax match    adaOperatorKeyword "\<or\>"
+syntax match    adaOperatorKeyword "\<or\s\+else\>"
+
 syntax match    adaOperator "[-+*/<>&]"
 syntax keyword  adaOperator **
 syntax match    adaOperator "[/<>]="
-syntax keyword  adaOperator =>
 syntax match    adaOperator "\.\."
 syntax match    adaOperator "="
 
@@ -111,6 +111,7 @@ endif
 " Note that in Ada, assignment (:=) is not considered an operator.
 "
 syntax match adaAssignment		":="
+syntax match adaAssignment		"=>"
 
 " Section: Numbers, including floating point, exponents, and alternate bases. {{{1
 "
@@ -141,6 +142,7 @@ syntax keyword adaBoolean	true false
 syntax match adaError "//"
 syntax match adaError "/\*"
 syntax match adaError "=="
+syntax match adaError "!="
 
 
 " Section: Space Errors {{{1
@@ -187,7 +189,7 @@ syntax match adaKeyword	    "\<record;"me=e-1
 " Section: type classes {{{1
 "
 syntax keyword adaStorageClass	abstract access aliased array at constant delta
-syntax keyword adaStorageClass	digits limited of private range tagged
+syntax keyword adaStorageClass	digits limited private range tagged
 syntax keyword adaStorageClass	interface synchronized
 syntax keyword adaTypedef	subtype type
 
@@ -206,7 +208,7 @@ syntax keyword  adaConditional	elsif when
 
 " Section: other keywords {{{1
 syntax match    adaKeyword	    "\<is\>" contains=adaRecord
-syntax keyword  adaKeyword	    all do exception in new null out
+syntax keyword  adaKeyword	    some all do exception in of new null out
 syntax keyword  adaKeyword	    separate until overriding
 
 " Section: begin keywords {{{1
@@ -233,7 +235,7 @@ if exists("ada_withuse_ordinary")
 else
    " Highlight "with" and "use" clauses like C's "#include" when they're used
    " to reference other compilation units; otherwise they're ordinary keywords.
-   " If we have vim 6.0 or later, we'll use its advanced pattern-matching
+   " If we have Vim 6.0 or later, we'll use its advanced pattern-matching
    " capabilities so that we won't match leading spaces.
    syntax match adaKeyword	"\<with\>"
    syntax match adaKeyword	"\<use\>"
@@ -242,6 +244,8 @@ else
    syntax match adaInc		"\<with\>" contained contains=NONE
    syntax match adaInc		"\<with\s\+type\>" contained contains=NONE
    syntax match adaInc		"\<use\>" contained contains=NONE
+   syntax match adaInc		"\<use\s\+type\>" contained contains=NONE
+   syntax match adaInc		"\<use\s\+all\s\+type\>" contained contains=NONE
    " Recognize "with null record" as a keyword (even the "record").
    syntax match adaKeyword	"\<with\s\+null\s\+record\>"
    " Consider generic formal parameters of subprograms and packages as keywords.
@@ -314,6 +318,7 @@ highlight def link adaLabel	    Label
 highlight def link adaNumber	    Number
 highlight def link adaSign	    Number
 highlight def link adaOperator	    Operator
+highlight def link adaOperatorKeyword	    Keyword
 highlight def link adaPreproc	    PreProc
 highlight def link adaRepeat	    Repeat
 highlight def link adaSpecial	    Special
